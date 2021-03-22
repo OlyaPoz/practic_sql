@@ -1,97 +1,80 @@
-CREATE TABLE "users" (
-  id serial PRIMARY KEY,
-  first_name varchar(64) NOT NULL,
-  last_name varchar(64) NOT NULL,
-  email varchar(256) NOT NULL CHECK (email != ''),
-  is_male boolean NOT NULL,
-  birthday date NOT NULL CHECK (
-    birthday < current_date
-    AND birthday > '1900/1/1'
+
+CREATE TABLE "workers" (
+  "id" serial PRIMARY KEY,
+  "name" varchar(64) NOT NULL,
+  "birthday" date NOT NULL CHECK (
+    "birthday" < current_date
+    AND "birthday" > '1900/1/1'
   ),
-  height numeric(3, 2) NOT NULL CHECK (
-    height > 0.20
-    AND height < 2.5
-  ),
-  CONSTRAINT "CK_FULL_NAME" CHECK (
-    first_name != ''
-    AND last_name != ''
-  )
+  "salary" int NOT NULL
 );
-ALTER TABLE "users"
-ADD COLUMN "weight" int CHECK (
-    "weight" BETWEEN 0 AND 300
-  );
-/* 
- CRUD    SQL
- 
- CREATE  INSERT DML - manipulation
- READ    SELECT DQL - query
- UPDATE  UPDATE DML - manipulation
- DELETE  DELETE DML - manipulation
- */
+/* */
+INSERT INTO "workers" ("name", "birthday", "salary")
+VALUES('Nikita', '1995.10.05', '300'),
+('Svetlana', '1997.05.15', '1200');
+/* */
+INSERT INTO "workers" ("name", "birthday", "salary")
+VALUES('Yaroslav', '1980.10.05', '1200'),
+('Petro', '1993.05.15', '1000');
+/* */
+INSERT INTO "workers" ("name", "birthday", "salary")
+VALUES('Vasya', '1999.10.05', '100');
+/* */
+UPDATE "workers"
+SET "salary" = 200
+WHERE "id" = 5;
+/* */
+UPDATE "workers"
+SET "birthday" = '1987.05.15'
+WHERE "id" = 4;
+/* */
+UPDATE "workers"
+SET "salary" = 700
+WHERE "salary" = 300;
+/* */
+UPDATE "workers"
+SET "birthday" = '1999.05.15'
+WHERE "id" > 2 AND "id" <= 5;
+/* */
+UPDATE "workers"
+SET "name" = 'Zhenya', "salary" = 900
+WHERE "name" = 'Vasya';
+/* */
+SELECT * FROM "workers"
+Where "id" = 3;
+/* */
+SELECT * FROM "workers"
+Where "salary" > 400;
+/*  */
+SELECT "salary", age("birthday") FROM "workers"
+WHERE "name" = 'Zhenya';
+/* */
+SELECT * FROM "workers"
+WHERE "name" = 'Petro';
+/* */
+SELECT * FROM "workers"
+WHERE "name" != 'Petro';
+/*  */
+SELECT * FROM "workers"
+WHERE extract('years' from age("birthday")) = 27 OR "salary" = 1000;
 /* */
 SELECT *
-FROM "users"
-WHERE "id" = 600;
-/*  */
-UPDATE "users"
-SET "weight" = 68
-WHERE "id" = 600
-RETURNING "weight",
-  "id";
-/*  */
-DELETE FROM "users"
-WHERE "id" = 600
-RETURNING *;
-/* 
- 1. get all woman
- 2. get all man
- 3. get all adult    tip:  users age(), make_interval(), >,<, =, !=,......
- 4. get all adult woman
- 5. get all users: filter age > 20 and < 40
- 6. get all who were born in September
- 7. get all users who were born 1 November
- */
-/* 1 */
+FROM "workers"
+WHERE age("birthday") BETWEEN make_interval(25) AND make_interval(29);
+/* */
 SELECT *
-FROM "users"
-WHERE "is_male" = false;
-/* 2 */
-SELECT *
-FROM "users"
-WHERE "is_male" = true;
-/* 3 */
-SELECT *
-FROM "users"
-WHERE age("birthday") >= make_interval(18)
-  AND "is_male" = false;
-/* 5 */
-SELECT *
-FROM "users"
-WHERE age("birthday") BETWEEN make_interval(20) AND make_interval(40);
-/*  */
-SELECT *
-FROM "users"
-WHERE "is_male" = false
-LIMIT 10 OFFSET 0;
-/*  */
-SELECT "first_name" AS "Имя",
-  "last_name" AS "Фамилия",
-  "email" AS "Почта"
-FROM "users" AS "u"
-WHERE "u"."id" = 100;
-/*  */
-SELECT concat("first_name", ' ', "last_name") AS "Full name"
-FROM "users";
-/* 
- ВСЕ пользователи, полное имя которых занимает больше 15 символов.
- 
- char_length
- concat
- >
- 15
- */
-SELECT *,
-  char_length(concat("first_name", ' ', "last_name")) as "Full name"
-FROM "users"
-WHERE char_length(concat("first_name", ' ', "last_name")) > 20;
+FROM "workers"
+WHERE age("birthday") BETWEEN make_interval(23) AND make_interval(27) OR "salary" BETWEEN  make_interval(400) AND make_interval(1000);
+
+
+
+
+
+
+
+
+
+
+
+
+
