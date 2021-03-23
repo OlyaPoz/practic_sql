@@ -6,7 +6,7 @@ CREATE TABLE "workers" (
     "birthday" < current_date
     AND "birthday" > '1900/1/1'
   ),
-  "salary" int NOT NULL
+  "salary" numeric NOT NULL
 );
 /* */
 INSERT INTO "workers" ("name", "birthday", "salary")
@@ -54,7 +54,7 @@ WHERE "name" = 'Petro';
 /* */
 SELECT * FROM "workers"
 WHERE "name" != 'Petro';
-/*  */
+/* */
 SELECT * FROM "workers"
 WHERE extract('years' from age("birthday")) = 27 OR "salary" = 1000;
 /* */
@@ -64,7 +64,7 @@ WHERE age("birthday") BETWEEN make_interval(25) AND make_interval(29);
 /* */
 SELECT *
 FROM "workers"
-WHERE age("birthday") BETWEEN make_interval(23) AND make_interval(27) OR "salary" BETWEEN  make_interval(400) AND make_interval(1000);
+WHERE age("birthday") BETWEEN make_interval(23) AND make_interval(27) OR "salary" > 400 AND "salary" < 1000;
 
 
 
